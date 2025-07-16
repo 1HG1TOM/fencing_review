@@ -1,0 +1,976 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		40FE41012E12B011001F65D0 /* fencing_review Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 40FE41002E12B011001F65D0 /* fencing_review Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		40FE40EB2E12B011001F65D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40FE40D52E12B00F001F65D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40FE40DC2E12B00F001F65D0;
+			remoteInfo = fencing_review;
+		};
+		40FE40F52E12B011001F65D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40FE40D52E12B00F001F65D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40FE40DC2E12B00F001F65D0;
+			remoteInfo = fencing_review;
+		};
+		40FE41022E12B011001F65D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40FE40D52E12B00F001F65D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40FE40FF2E12B011001F65D0;
+			remoteInfo = "fencing_review Watch App";
+		};
+		40FE41102E12B013001F65D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40FE40D52E12B00F001F65D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40FE40FF2E12B011001F65D0;
+			remoteInfo = "fencing_review Watch App";
+		};
+		40FE411A2E12B013001F65D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 40FE40D52E12B00F001F65D0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 40FE40FF2E12B011001F65D0;
+			remoteInfo = "fencing_review Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		40FE41262E12B013001F65D0 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				40FE41012E12B011001F65D0 /* fencing_review Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		40FE40DD2E12B00F001F65D0 /* fencing_review.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fencing_review.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FE40EA2E12B011001F65D0 /* fencing_reviewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fencing_reviewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FE40F42E12B011001F65D0 /* fencing_reviewUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fencing_reviewUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FE41002E12B011001F65D0 /* fencing_review Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "fencing_review Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FE410F2E12B013001F65D0 /* fencing_review Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "fencing_review Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		40FE41192E12B013001F65D0 /* fencing_review Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "fencing_review Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		40FE40DF2E12B00F001F65D0 /* fencing_review */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = fencing_review;
+			sourceTree = "<group>";
+		};
+		40FE40ED2E12B011001F65D0 /* fencing_reviewTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = fencing_reviewTests;
+			sourceTree = "<group>";
+		};
+		40FE40F72E12B011001F65D0 /* fencing_reviewUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = fencing_reviewUITests;
+			sourceTree = "<group>";
+		};
+		40FE41042E12B011001F65D0 /* fencing_review Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "fencing_review Watch App";
+			sourceTree = "<group>";
+		};
+		40FE41122E12B013001F65D0 /* fencing_review Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "fencing_review Watch AppTests";
+			sourceTree = "<group>";
+		};
+		40FE411C2E12B013001F65D0 /* fencing_review Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "fencing_review Watch AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		40FE40DA2E12B00F001F65D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40E72E12B011001F65D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40F12E12B011001F65D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40FD2E12B011001F65D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE410C2E12B013001F65D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE41162E12B013001F65D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		40FE40D42E12B00F001F65D0 = {
+			isa = PBXGroup;
+			children = (
+				40FE40DF2E12B00F001F65D0 /* fencing_review */,
+				40FE40ED2E12B011001F65D0 /* fencing_reviewTests */,
+				40FE40F72E12B011001F65D0 /* fencing_reviewUITests */,
+				40FE41042E12B011001F65D0 /* fencing_review Watch App */,
+				40FE41122E12B013001F65D0 /* fencing_review Watch AppTests */,
+				40FE411C2E12B013001F65D0 /* fencing_review Watch AppUITests */,
+				40FE40DE2E12B00F001F65D0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		40FE40DE2E12B00F001F65D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				40FE40DD2E12B00F001F65D0 /* fencing_review.app */,
+				40FE40EA2E12B011001F65D0 /* fencing_reviewTests.xctest */,
+				40FE40F42E12B011001F65D0 /* fencing_reviewUITests.xctest */,
+				40FE41002E12B011001F65D0 /* fencing_review Watch App.app */,
+				40FE410F2E12B013001F65D0 /* fencing_review Watch AppTests.xctest */,
+				40FE41192E12B013001F65D0 /* fencing_review Watch AppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		40FE40DC2E12B00F001F65D0 /* fencing_review */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FE41272E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review" */;
+			buildPhases = (
+				40FE40D92E12B00F001F65D0 /* Sources */,
+				40FE40DA2E12B00F001F65D0 /* Frameworks */,
+				40FE40DB2E12B00F001F65D0 /* Resources */,
+				40FE41262E12B013001F65D0 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				40FE41032E12B011001F65D0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				40FE40DF2E12B00F001F65D0 /* fencing_review */,
+			);
+			name = fencing_review;
+			packageProductDependencies = (
+			);
+			productName = fencing_review;
+			productReference = 40FE40DD2E12B00F001F65D0 /* fencing_review.app */;
+			productType = "com.apple.product-type.application";
+		};
+		40FE40E92E12B011001F65D0 /* fencing_reviewTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FE412A2E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_reviewTests" */;
+			buildPhases = (
+				40FE40E62E12B011001F65D0 /* Sources */,
+				40FE40E72E12B011001F65D0 /* Frameworks */,
+				40FE40E82E12B011001F65D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				40FE40EC2E12B011001F65D0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				40FE40ED2E12B011001F65D0 /* fencing_reviewTests */,
+			);
+			name = fencing_reviewTests;
+			packageProductDependencies = (
+			);
+			productName = fencing_reviewTests;
+			productReference = 40FE40EA2E12B011001F65D0 /* fencing_reviewTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		40FE40F32E12B011001F65D0 /* fencing_reviewUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FE412D2E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_reviewUITests" */;
+			buildPhases = (
+				40FE40F02E12B011001F65D0 /* Sources */,
+				40FE40F12E12B011001F65D0 /* Frameworks */,
+				40FE40F22E12B011001F65D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				40FE40F62E12B011001F65D0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				40FE40F72E12B011001F65D0 /* fencing_reviewUITests */,
+			);
+			name = fencing_reviewUITests;
+			packageProductDependencies = (
+			);
+			productName = fencing_reviewUITests;
+			productReference = 40FE40F42E12B011001F65D0 /* fencing_reviewUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		40FE40FF2E12B011001F65D0 /* fencing_review Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FE41232E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review Watch App" */;
+			buildPhases = (
+				40FE40FC2E12B011001F65D0 /* Sources */,
+				40FE40FD2E12B011001F65D0 /* Frameworks */,
+				40FE40FE2E12B011001F65D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				40FE41042E12B011001F65D0 /* fencing_review Watch App */,
+			);
+			name = "fencing_review Watch App";
+			packageProductDependencies = (
+			);
+			productName = "fencing_review Watch App";
+			productReference = 40FE41002E12B011001F65D0 /* fencing_review Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		40FE410E2E12B013001F65D0 /* fencing_review Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FE41302E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review Watch AppTests" */;
+			buildPhases = (
+				40FE410B2E12B013001F65D0 /* Sources */,
+				40FE410C2E12B013001F65D0 /* Frameworks */,
+				40FE410D2E12B013001F65D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				40FE41112E12B013001F65D0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				40FE41122E12B013001F65D0 /* fencing_review Watch AppTests */,
+			);
+			name = "fencing_review Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "fencing_review Watch AppTests";
+			productReference = 40FE410F2E12B013001F65D0 /* fencing_review Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		40FE41182E12B013001F65D0 /* fencing_review Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40FE41332E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review Watch AppUITests" */;
+			buildPhases = (
+				40FE41152E12B013001F65D0 /* Sources */,
+				40FE41162E12B013001F65D0 /* Frameworks */,
+				40FE41172E12B013001F65D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				40FE411B2E12B013001F65D0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				40FE411C2E12B013001F65D0 /* fencing_review Watch AppUITests */,
+			);
+			name = "fencing_review Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "fencing_review Watch AppUITests";
+			productReference = 40FE41192E12B013001F65D0 /* fencing_review Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		40FE40D52E12B00F001F65D0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					40FE40DC2E12B00F001F65D0 = {
+						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
+					};
+					40FE40E92E12B011001F65D0 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 40FE40DC2E12B00F001F65D0;
+					};
+					40FE40F32E12B011001F65D0 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 40FE40DC2E12B00F001F65D0;
+					};
+					40FE40FF2E12B011001F65D0 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					40FE410E2E12B013001F65D0 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 40FE40FF2E12B011001F65D0;
+					};
+					40FE41182E12B013001F65D0 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 40FE40FF2E12B011001F65D0;
+					};
+				};
+			};
+			buildConfigurationList = 40FE40D82E12B00F001F65D0 /* Build configuration list for PBXProject "fencing_review" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 40FE40D42E12B00F001F65D0;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 40FE40DE2E12B00F001F65D0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				40FE40DC2E12B00F001F65D0 /* fencing_review */,
+				40FE40E92E12B011001F65D0 /* fencing_reviewTests */,
+				40FE40F32E12B011001F65D0 /* fencing_reviewUITests */,
+				40FE40FF2E12B011001F65D0 /* fencing_review Watch App */,
+				40FE410E2E12B013001F65D0 /* fencing_review Watch AppTests */,
+				40FE41182E12B013001F65D0 /* fencing_review Watch AppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		40FE40DB2E12B00F001F65D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40E82E12B011001F65D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40F22E12B011001F65D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40FE2E12B011001F65D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE410D2E12B013001F65D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE41172E12B013001F65D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		40FE40D92E12B00F001F65D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40E62E12B011001F65D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40F02E12B011001F65D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE40FC2E12B011001F65D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE410B2E12B013001F65D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		40FE41152E12B013001F65D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		40FE40EC2E12B011001F65D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40FE40DC2E12B00F001F65D0 /* fencing_review */;
+			targetProxy = 40FE40EB2E12B011001F65D0 /* PBXContainerItemProxy */;
+		};
+		40FE40F62E12B011001F65D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40FE40DC2E12B00F001F65D0 /* fencing_review */;
+			targetProxy = 40FE40F52E12B011001F65D0 /* PBXContainerItemProxy */;
+		};
+		40FE41032E12B011001F65D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40FE40FF2E12B011001F65D0 /* fencing_review Watch App */;
+			targetProxy = 40FE41022E12B011001F65D0 /* PBXContainerItemProxy */;
+		};
+		40FE41112E12B013001F65D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40FE40FF2E12B011001F65D0 /* fencing_review Watch App */;
+			targetProxy = 40FE41102E12B013001F65D0 /* PBXContainerItemProxy */;
+		};
+		40FE411B2E12B013001F65D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 40FE40FF2E12B011001F65D0 /* fencing_review Watch App */;
+			targetProxy = 40FE411A2E12B013001F65D0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		40FE41212E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		40FE41222E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		40FE41242E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = fencing_review;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.1hg1tom.fencing-review";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Debug;
+		};
+		40FE41252E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = fencing_review;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.1hg1tom.fencing-review";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Release;
+		};
+		40FE41282E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = fencing_review;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		40FE41292E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = fencing_review;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		40FE412B2E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-reviewTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/fencing_review.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/fencing_review";
+			};
+			name = Debug;
+		};
+		40FE412C2E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-reviewTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/fencing_review.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/fencing_review";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		40FE412E2E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-reviewUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = fencing_review;
+			};
+			name = Debug;
+		};
+		40FE412F2E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-reviewUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = fencing_review;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		40FE41312E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/fencing_review Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/fencing_review Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Debug;
+		};
+		40FE41322E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/fencing_review Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/fencing_review Watch App";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Release;
+		};
+		40FE41342E12B013001F65D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "fencing_review Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Debug;
+		};
+		40FE41352E12B013001F65D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V8BT29SV37;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.1hg1tom.fencing-review-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "fencing_review Watch App";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		40FE40D82E12B00F001F65D0 /* Build configuration list for PBXProject "fencing_review" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE41212E12B013001F65D0 /* Debug */,
+				40FE41222E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FE41232E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE41242E12B013001F65D0 /* Debug */,
+				40FE41252E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FE41272E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE41282E12B013001F65D0 /* Debug */,
+				40FE41292E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FE412A2E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_reviewTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE412B2E12B013001F65D0 /* Debug */,
+				40FE412C2E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FE412D2E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_reviewUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE412E2E12B013001F65D0 /* Debug */,
+				40FE412F2E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FE41302E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE41312E12B013001F65D0 /* Debug */,
+				40FE41322E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		40FE41332E12B013001F65D0 /* Build configuration list for PBXNativeTarget "fencing_review Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				40FE41342E12B013001F65D0 /* Debug */,
+				40FE41352E12B013001F65D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 40FE40D52E12B00F001F65D0 /* Project object */;
+}
