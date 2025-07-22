@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var cameraManager = CameraManager()
+    @StateObject private var cameraManager = CameraManager.shared
     
     var body: some View {
         ZStack {

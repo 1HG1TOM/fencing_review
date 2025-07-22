@@ -15,37 +15,24 @@ class WatchConnectivityManageriPhone: NSObject, WCSessionDelegate {
     // CameraManager から登録される
     var onFlagReceived: ((TimeInterval) -> Void)?
 
-    // 録画状態の送信メソッド
-    func sendRecordingStateToWatch(_ isRecording: Bool) {
-        let message = ["isRecording": isRecording]
-        if WCSession.default.isReachable {
-            WCSession.default.sendMessage(message, replyHandler: nil, errorHandler: { error in
-                print("録画状態の送信に失敗: \(error.localizedDescription)")
-            })
+    // フラグ送信を受信
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        if let timestamp = message["flag_timestamp"] as? TimeInterval {
+            print("受信（non-reply）: flag_timestamp = \(timestamp)")
+            onFlagReceived?(timestamp)
         } else {
-            print("Apple Watch に接続されていません")
+            print("不明なメッセージ: \(message)")
         }
     }
 
-    // MARK: - WCSessionDelegate
-
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        if let error = error {
-            print("WCSession activation failed: \(error.localizedDescription)")
-        } else {
-            print("WCSession activated with state: \(activationState.rawValue)")
-        }
-    }
 
     func sessionDidBecomeInactive(_ session: WCSession) {}
+
     func sessionDidDeactivate(_ session: WCSession) {
         WCSession.default.activate()
     }
 
-    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        if let timestamp = message["flag_timestamp"] as? TimeInterval {
-            print("受信: flag_timestamp = \(timestamp)")
-            onFlagReceived?(timestamp)
-        }
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        print("Watch session activated with state: \(activationState.rawValue)")
     }
 }

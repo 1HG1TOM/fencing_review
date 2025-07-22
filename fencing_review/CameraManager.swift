@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import UIKit
 
 @MainActor
 class CameraManager: ObservableObject {
@@ -21,6 +22,8 @@ class CameraManager: ObservableObject {
     @Published var resultText = "試合名を入力してください。"
     @Published var remainingRequests = 0
     @Published var flagTimestamps: [TimeInterval] = []
+    
+    static let shared = CameraManager()
 
     private let analysisManager = AnalysisManager()
     private var recordingStartTime: Date?
@@ -30,8 +33,11 @@ class CameraManager: ObservableObject {
     private let apiURL = URL(string: "https://nkmr-lab-share-galleria.tail4dcf3.ts.net/detect-players")
     
     var cameraViewController: CameraViewController?
+    
+    var isRecording: Bool {
+        return self.uiState == .recording
+    }
 
-    // WatchConnectivityでのフラグ受信を設定
     init() {
         WatchConnectivityManageriPhone.shared.onFlagReceived = { [weak self] absoluteTime in
             guard let self = self,
@@ -78,7 +84,6 @@ class CameraManager: ObservableObject {
                         self.flagTimestamps.removeAll()
                         self.uiState = .recording
                         self.resultText = "分析中..."
-                        WatchConnectivityManageriPhone.shared.sendRecordingStateToWatch(true)
                     } catch {
                         self.errorMessage = "録画の開始に失敗しました: \(error.localizedDescription)"
                     }
@@ -89,7 +94,6 @@ class CameraManager: ObservableObject {
         }
     }
 
-    
     func stopRecordingAndAnalysis() {
         guard self.uiState == .recording else { return }
         
@@ -98,7 +102,7 @@ class CameraManager: ObservableObject {
         self.statusTimer?.invalidate()
         self.statusTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             Task {
-                let count = await self.analysisManager.inFlightRequests.count
+                let count = await self.analysisManager.getInFlightRequestCount()
                 await MainActor.run { self.remainingRequests = count }
             }
         }
@@ -133,7 +137,6 @@ class CameraManager: ObservableObject {
             let analysisFilename = try DataSaver.saveAnalysisData(frames: analysisFrames, sessionID: newSession.id)
             newSession.analysisDataFilename = analysisFilename
 
-
             print("フラグファイル保存済み: \(flagFilename)")
             
             SessionStore.save(session: newSession)
@@ -153,7 +156,6 @@ class CameraManager: ObservableObject {
         if self.resultText.contains("保存が完了") == false {
              self.resultText = "試合名を入力してください。"
         }
-        WatchConnectivityManageriPhone.shared.sendRecordingStateToWatch(false)
     }
     
     func onFrameCaptured(sampleBuffer: CMSampleBuffer) {
@@ -168,12 +170,13 @@ class CameraManager: ObservableObject {
         }
     }
     
-    private nonisolated func sendFrameForAnalysis(_ sampleBuffer: CMSampleBuffer) async {
+    private func sendFrameForAnalysis(_ sampleBuffer: CMSampleBuffer) async {
         guard let url = await self.apiURL,
               let startTime = await self.recordingStartTime,
               let vc = await self.cameraViewController,
               let previewLayer = vc.previewLayer,
-              let image = UIImage(sampleBuffer: sampleBuffer) else { return }
+              let image = imageFromSampleBuffer(sampleBuffer) else { return }
+
 
         let videoTimestamp = Date().timeIntervalSince(startTime)
         let requestId = UUID().uuidString
@@ -215,8 +218,7 @@ class CameraManager: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: body)
             if let decoded = try? JSONDecoder().decode(DetectionResult.self, from: data) {
-                await self.analysisManager.add(result: decoded, timestamp: videoTimestamp)
-                
+                await self.analysisManager.add(result: decoded, timestamp: videoTimestamp, requestID: requestId)
                 await MainActor.run {
                     if decoded.people == 2, let left = decoded.left, let right = decoded.right {
                         self.resultText = "検出人数: \(decoded.people)\n左: (\(left.x), \(left.y))\n右: (\(right.x), \(right.y))"
@@ -230,44 +232,30 @@ class CameraManager: ObservableObject {
         }
     }
     
-    private nonisolated func resizeImage(_ image: UIImage, maxWidth: CGFloat = 640) -> UIImage {
+    private func resizeImage(_ image: UIImage, maxWidth: CGFloat = 640) -> UIImage {
         if image.size.width <= maxWidth { return image }
-        let scale = maxWidth / image.size.width
-        let newSize = CGSize(width: maxWidth, height: image.size.height * scale)
+
+        let scale: CGFloat = maxWidth / image.size.width
+        let width: CGFloat = maxWidth
+        let height: CGFloat = image.size.height * scale
+        let newSize = CGSize(width: width, height: height)
+        
         let renderer = UIGraphicsImageRenderer(size: newSize)
-        return renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: newSize)) }
-    }
-}
-
-// MARK: - 拡張
-
-extension UIImage {
-    convenience init?(sampleBuffer: CMSampleBuffer) {
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
-        let ciImage = CIImage(cvPixelBuffer: imageBuffer)
-        let context = CIContext()
-        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return nil }
-        self.init(cgImage: cgImage)
-    }
-}
-
-extension Data {
-    mutating func append(_ string: String) {
-        if let data = string.data(using: .utf8) {
-            append(data)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
         }
     }
-}
-
-extension DataSaver {
-    static func saveFlagTimestamps(times: [TimeInterval], sessionID: UUID) throws -> String {
-        let wrapped = times.map { ["flagTime": $0] }
-        let data = try JSONSerialization.data(withJSONObject: wrapped, options: .prettyPrinted)
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let fileName = "flags-\(sessionID.uuidString).json"
-        let fileURL = documentsDirectory.appendingPathComponent("flags-\(sessionID.uuidString).json")
-        try data.write(to: fileURL)
-        return fileName
+    
+    private func imageFromSampleBuffer(_ sampleBuffer: CMSampleBuffer) -> UIImage? {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return nil
+        }
+        let ciImage = CIImage(cvImageBuffer: pixelBuffer)
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
     }
-}
 
+}

@@ -7,18 +7,17 @@ struct ContentView: View {
         GeometryReader { geometry in
             VStack {
                 Spacer()
-                
+
                 Button(action: {
                     connectivityManager.sendFlagTimestamp()
                 }) {
                     Text("フラグ")
                         .font(.title2)
                         .frame(width: geometry.size.width, height: geometry.size.height)
-                        .background(connectivityManager.isRecording ? Color.green : Color.gray)
+                        .background(Color.green)
                         .foregroundColor(.white)
                         .cornerRadius(20)
                 }
-                .disabled(!connectivityManager.isRecording)
 
                 Spacer()
             }

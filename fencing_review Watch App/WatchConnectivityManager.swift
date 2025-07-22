@@ -5,8 +5,6 @@ import WatchKit
 class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     private var session: WCSession?
 
-    @Published var isRecording: Bool = false  // 録画状態を保持
-
     override init() {
         super.init()
         if WCSession.isSupported() {
@@ -30,16 +28,6 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
 
         session.sendMessage(message, replyHandler: nil) { error in
             print("送信失敗: \(error.localizedDescription)")
-        }
-    }
-
-    // iPhoneからのメッセージ受信
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        if let recording = message["isRecording"] as? Bool {
-            DispatchQueue.main.async {
-                self.isRecording = recording
-                print("録画状態を更新: \(recording)")
-            }
         }
     }
 

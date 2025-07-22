@@ -56,6 +56,16 @@ class DataSaver {
             throw SaveError.fileSystemError(error)
         }
     }
+    
+    static func saveFlagTimestamps(times: [TimeInterval], sessionID: UUID) throws -> String {
+            let wrapped = times.map { ["flagTime": $0] }
+            let data = try JSONSerialization.data(withJSONObject: wrapped, options: .prettyPrinted)
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let fileName = "flags-\(sessionID.uuidString).json"
+            let fileURL = documentsDirectory.appendingPathComponent(fileName)
+            try data.write(to: fileURL)
+            return fileName
+        }
 }
 
 class SessionStore {
@@ -90,3 +100,10 @@ class SessionStore {
     }
 }
 
+extension Data {
+    mutating func append(_ string: String) {
+        if let data = string.data(using: .utf8) {
+            append(data)
+        }
+    }
+}
