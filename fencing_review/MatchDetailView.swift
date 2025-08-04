@@ -1,6 +1,8 @@
+// MatchDetailView.swift
 import AVKit
 import Photos
 import Charts
+import SwiftUI
 
 struct PositionDataPoint: Identifiable {
     let id = UUID()
@@ -22,7 +24,7 @@ struct MatchDetailView: View {
     @State private var flagTimestamps: [Double] = []
     @State private var currentTime: Double = 0
     @State private var videoDuration: Double = 0
-    @State private var chartWidth: CGFloat = 0
+    @State private var chartHeight: CGFloat = 400
     @State private var timer: Timer?
     @State private var isDraggingSlider: Bool = false
     @State private var selectedSetIndex: Int = 0
@@ -39,8 +41,21 @@ struct MatchDetailView: View {
                 .padding(.horizontal)
                 .onChange(of: selectedSetIndex) { newValue in
                     if newValue < splitSets.count {
-                        self.positionData = splitSets[newValue]
+                        let newData = splitSets[newValue]
+                        self.positionData = newData
+                        let newStartTime = newData.first?.timestamp ?? 0
+                        self.currentTime = newStartTime
+                        seekToTime(newStartTime) // ← 再生位置をセット先頭にジャンプ
                     }
+                }
+
+                if let player = player, let size = videoSize {
+                    let aspectRatio = size.width / size.height
+                    AVPlayerContainerView(player: player)
+                        .aspectRatio(aspectRatio, contentMode: .fit)
+                        .onAppear { player.play() }
+                } else {
+                    Text("動画を読み込み中...")
                 }
 
                 if !positionData.isEmpty {
@@ -48,57 +63,28 @@ struct MatchDetailView: View {
                     let end = positionData.last?.timestamp ?? start
                     let duration = end - start
 
-                    DualLineGraph(
-                        data: positionData,
-                        flagTimestamps: flagTimestamps,
-                        onTapTime: { tappedTime in
-                            seekToTime(tappedTime)
-                        },
-                        chartWidth: $chartWidth,
-                        currentTime: currentTime,
-                        videoDuration: duration,
-                        xAxisStart: start
-                    )
+                    HStack(alignment: .top) {
+                        VerticalSlider(
+                            value: $currentTime,
+                            range: start...end,
+                            flags: flagTimestamps,
+                            height: chartHeight,
+                            onEnded: { seekToTime($0) }
+                        )
+                        .frame(width: 40)
 
-                    VStack(spacing: 4) {
-                        ZStack(alignment: .leading) {
-                            GeometryReader { geo in
-                                let width = chartWidth > 0 ? chartWidth : geo.size.width
-                                ForEach(flagTimestamps, id: \.self) { flag in
-                                    let xPos = CGFloat((flag - start) / (end - start)) * width
-                                    if flag >= start && flag <= end {
-                                        Rectangle()
-                                            .fill(Color.yellow)
-                                            .frame(width: 2, height: 20)
-                                            .position(x: xPos, y: 10)
-                                    }
-                                }
-
-                                Slider(value: $currentTime, in: start...end, onEditingChanged: { editing in
-                                    isDraggingSlider = editing
-                                    if !editing {
-                                        seekToTime(currentTime)
-                                    }
-                                })
-                                .frame(width: width)
-                            }
-                            .frame(height: 20)
-                        }
+                        DualLineGraph(
+                            data: positionData,
+                            flagTimestamps: flagTimestamps,
+                            onTapTime: { seekToTime($0) },
+                            chartHeight: $chartHeight,
+                            currentTime: $currentTime,
+                            videoDuration: duration,
+                            xAxisStart: start
+                        )
                     }
-                    .padding(.horizontal)
                 } else {
                     Text("分析データを読み込み中...")
-                }
-
-                if let player = player {
-                    if let size = videoSize {
-                        let aspectRatio = size.width / size.height
-                        AVPlayerContainerView(player: player)
-                            .aspectRatio(aspectRatio, contentMode: .fit)
-                            .onAppear { player.play()}
-                    }
-                } else {
-                    Text("動画を読み込み中...")
                 }
             }
             .padding()
@@ -232,7 +218,6 @@ struct MatchDetailView: View {
                 }
                 lastValidTime = point.timestamp
             }
-
             currentSet.append(point)
         }
 
@@ -240,9 +225,7 @@ struct MatchDetailView: View {
             rawSets.append(currentSet)
         }
 
-        // 90秒未満のセットを前にくっつける
         var mergedSets: [[PositionDataPoint]] = []
-
         for set in rawSets {
             if set.count < 2 {
                 if !mergedSets.isEmpty {
@@ -252,11 +235,9 @@ struct MatchDetailView: View {
                 }
                 continue
             }
-
             let start = set.first!.timestamp
             let end = set.last!.timestamp
             let duration = end - start
-
             if duration < minDuration, !mergedSets.isEmpty {
                 mergedSets[mergedSets.count - 1].append(contentsOf: set)
             } else {
@@ -266,132 +247,4 @@ struct MatchDetailView: View {
 
         return mergedSets
     }
-}
-
-
-
-import SwiftUI
-import Charts
-
-struct DualLineGraph: View {
-    let data: [PositionDataPoint]
-    let flagTimestamps: [Double]
-    let onTapTime: (Double) -> Void
-    @State private var chartSize: CGSize = .zero
-    @Binding var chartWidth: CGFloat
-    let currentTime: Double
-    let videoDuration: Double
-    let xAxisStart: Double
-
-    struct LinePoint: Hashable {
-        var timestamp: Double
-        var value: Double
-    }
-
-    var body: some View {
-        ZStack {
-            Chart {
-                // 分割した Target の折れ線を描画
-                ForEach(splitSeries(data: data, for: \.targetX), id: \.self) { segment in
-                    if segment.count > 1 {
-                        let segmentID = UUID().uuidString
-                        ForEach(segment, id: \.self) { point in
-                            LineMark(
-                                x: .value("Time", point.timestamp),
-                                y: .value("X Position", point.value),
-                                series: .value("Player", "Target \(segmentID)")
-                            )
-                            .foregroundStyle(.red)
-                        }
-                    }
-                }
-
-
-                // 分割した Opponent の折れ線を描画
-                ForEach(splitSeries(data: data, for: \.opponentX), id: \.self) { segment in
-                    if segment.count > 1 {
-                        let segmentID = UUID().uuidString
-                        ForEach(segment, id: \.self) { point in
-                            LineMark(
-                                x: .value("Time", point.timestamp),
-                                y: .value("X Position", point.value),
-                                series: .value("Player", "Opponent \(segmentID)")
-                            )
-                            .foregroundStyle(.blue)
-                        }
-                    }
-                }
-
-
-                // フラグ線
-                ForEach(flagTimestamps, id: \.self) { ts in
-                    RuleMark(x: .value("Flag", ts))
-                        .foregroundStyle(Color.yellow)
-                        .lineStyle(StrokeStyle(lineWidth: 3, dash: [4]))
-                }
-
-                // 現在位置線
-                RuleMark(x: .value("CurrentTime", currentTime))
-                    .foregroundStyle(Color.gray.opacity(0.4))
-                    .lineStyle(StrokeStyle(lineWidth: 2))
-            }
-
-            
-            .chartXAxisLabel("Time (s)")
-            .chartYScale(domain: -800...800)
-            .chartYAxis(.hidden)
-            .chartXScale(domain: xAxisStart...(xAxisStart + videoDuration))
-            .background(
-                GeometryReader { geo in
-                    Color.clear.onAppear {
-                        self.chartSize = geo.size
-                        self.chartWidth = geo.size.width
-                    }
-                }
-            )
-
-            // タップ検出領域
-            Color.clear
-                .contentShape(Rectangle())
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onEnded { value in
-                            let tapX = value.location.x
-                            let ratio = max(0, min(tapX / chartSize.width, 1))
-                            let tappedTime = xAxisStart + ratio * videoDuration
-                            onTapTime(tappedTime)
-                        }
-                )
-        }
-        .frame(height: 200)
-        .padding()
-    }
-
-    private func splitSeries(data: [PositionDataPoint], for keyPath: KeyPath<PositionDataPoint, Double?>) -> [[LinePoint]] {
-        var result: [[LinePoint]] = []
-        var current: [LinePoint] = []
-
-        for point in data {
-            if point.people == 2, let value = point[keyPath: keyPath] {
-                current.append(LinePoint(timestamp: point.timestamp, value: value))
-            } else {
-                if !current.isEmpty {
-                    result.append(current)
-                    current = []
-                }
-            }
-        }
-
-        if !current.isEmpty {
-            result.append(current)
-        }
-
-        print("分割セグメント数: \(result.count)")
-        for (index, segment) in result.enumerated() {
-            print("Segment \(index): \(segment.count) points")
-        }
-
-        return result
-    }
-
 }
