@@ -167,6 +167,7 @@ struct MatchDetailView: View {
         }
     }
 
+    
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
             guard !isDraggingSlider, let currentItem = player?.currentItem else { return }
