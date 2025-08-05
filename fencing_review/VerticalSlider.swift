@@ -33,9 +33,9 @@ struct VerticalSlider: View {
 
                 // 現在値ノブ
                 let ratio = CGFloat((value - range.lowerBound) / (range.upperBound - range.lowerBound))
-                Circle()
+                RoundedRectangle(cornerRadius: 6)
                     .fill(Color.blue)
-                    .frame(width: knobSize, height: knobSize)
+                    .frame(width: 1.5 * knobSize, height: knobSize)
                     .position(x: geo.size.width / 2, y: ratio * sliderHeight)
                     .gesture(
                         DragGesture()

@@ -24,80 +24,146 @@ struct MatchDetailView: View {
     @State private var flagTimestamps: [Double] = []
     @State private var currentTime: Double = 0
     @State private var videoDuration: Double = 0
-    @State private var chartHeight: CGFloat = 400
     @State private var timer: Timer?
     @State private var isDraggingSlider: Bool = false
-    @State private var selectedSetIndex: Int = 0
+    @State private var selectedSetIndex: Int = 0 {
+        didSet {
+            if splitSets.indices.contains(selectedSetIndex) {
+                positionData = splitSets[selectedSetIndex]
+            }
+        }
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
+        GeometryReader { geometry in
+            let isLandscape = geometry.size.width > geometry.size.height
+
+            VStack(spacing: 0) {
                 Picker("セット", selection: $selectedSetIndex) {
                     ForEach(splitSets.indices, id: \.self) { i in
                         Text("\(i + 1)").tag(i)
                     }
                 }
+                .onChange(of: selectedSetIndex) { newIndex in
+                    if splitSets.indices.contains(newIndex) {
+                        positionData = splitSets[newIndex]
+                        if let firstTimestamp = splitSets[newIndex].first?.timestamp {
+                            seekToTime(firstTimestamp)
+                        }
+                    }
+                }
                 .pickerStyle(SegmentedPickerStyle())
-                .padding(.horizontal)
-                .onChange(of: selectedSetIndex) { newValue in
-                    if newValue < splitSets.count {
-                        let newData = splitSets[newValue]
-                        self.positionData = newData
-                        let newStartTime = newData.first?.timestamp ?? 0
-                        self.currentTime = newStartTime
-                        seekToTime(newStartTime) // ← 再生位置をセット先頭にジャンプ
+                .padding()
+
+                if isLandscape {
+                    // ---- Landscape ----
+                    HStack(alignment: .center, spacing: 16) {
+                        // Video
+                        if let player = player, let size = videoSize {
+                            let aspectRatio = size.width / size.height
+                            AVPlayerContainerView(player: player)
+                                .aspectRatio(aspectRatio, contentMode: .fit)
+                                .frame(width: geometry.size.width * 0.6)
+                        } else {
+                            Text("動画を読み込み中...")
+                                .frame(width: geometry.size.width * 0.6)
+                        }
+
+                        // Chart + Slider
+                        if !positionData.isEmpty {
+                            let start = positionData.first?.timestamp ?? 0
+                            let end = positionData.last?.timestamp ?? start
+                            let duration = end - start
+                            let targetHeight = geometry.size.height * 0.8
+
+                            HStack(spacing: 8) {
+                                VerticalSlider(
+                                    value: $currentTime,
+                                    range: start...end,
+                                    flags: flagTimestamps,
+                                    height: targetHeight,
+                                    onEnded: { seekToTime($0) }
+                                )
+                                .frame(width: 40)
+
+                                DualLineGraph(
+                                    data: positionData,
+                                    flagTimestamps: flagTimestamps,
+                                    onTapTime: { seekToTime($0) },
+                                    chartHeight: .constant(targetHeight),  // ← 内側からの上書きを禁止
+                                    currentTime: $currentTime,
+                                    videoDuration: duration,
+                                    xAxisStart: start
+                                )
+                            }
+                            .frame(width: geometry.size.width * 0.2, height: targetHeight)
+                            .clipped() // ← はみ出し防止
+                        } else {
+                            Text("分析データを読み込み中...")
+                                .frame(width: geometry.size.width * 0.3)
+                        }
                     }
-                }
-
-                if let player = player, let size = videoSize {
-                    let aspectRatio = size.width / size.height
-                    AVPlayerContainerView(player: player)
-                        .aspectRatio(aspectRatio, contentMode: .fit)
-                        .onAppear { player.play() }
+                    .padding(.horizontal)
                 } else {
-                    Text("動画を読み込み中...")
-                }
+                    // ---- Portrait ----
+                    ScrollView {
+                        VStack(spacing: 15) {
+                            if let player = player, let size = videoSize {
+                                let aspectRatio = size.width / size.height
+                                AVPlayerContainerView(player: player)
+                                    .aspectRatio(aspectRatio, contentMode: .fit)
+                                    .onAppear { player.play() }
+                            } else {
+                                Text("動画を読み込み中...")
+                            }
 
-                if !positionData.isEmpty {
-                    let start = positionData.first?.timestamp ?? 0
-                    let end = positionData.last?.timestamp ?? start
-                    let duration = end - start
+                            if !positionData.isEmpty {
+                                let start = positionData.first?.timestamp ?? 0
+                                let end = positionData.last?.timestamp ?? start
+                                let duration = end - start
+                                let targetHeight = geometry.size.height * 0.5
+                                let targetWidth = geometry.size.width * 0.8
 
-                    HStack(alignment: .top) {
-                        VerticalSlider(
-                            value: $currentTime,
-                            range: start...end,
-                            flags: flagTimestamps,
-                            height: chartHeight,
-                            onEnded: { seekToTime($0) }
-                        )
-                        .frame(width: 40)
+                                HStack(alignment: .top) {
+                                    VerticalSlider(
+                                        value: $currentTime,
+                                        range: start...end,
+                                        flags: flagTimestamps,
+                                        height: targetHeight,
+                                        onEnded: { seekToTime($0) }
+                                    )
+                                    .frame(width: 40)
 
-                        DualLineGraph(
-                            data: positionData,
-                            flagTimestamps: flagTimestamps,
-                            onTapTime: { seekToTime($0) },
-                            chartHeight: $chartHeight,
-                            currentTime: $currentTime,
-                            videoDuration: duration,
-                            xAxisStart: start
-                        )
+                                    DualLineGraph(
+                                        data: positionData,
+                                        flagTimestamps: flagTimestamps,
+                                        onTapTime: { seekToTime($0) },
+                                        chartHeight: .constant(targetHeight), // ← 内側からの上書きを禁止
+                                        currentTime: $currentTime,
+                                        videoDuration: duration,
+                                        xAxisStart: start
+                                    )
+                                }
+                                .frame(width: targetWidth,height: targetHeight)
+                                .clipped()
+                            } else {
+                                Text("分析データを読み込み中...")
+                            }
+                        }
+                        .padding()
                     }
-                } else {
-                    Text("分析データを読み込み中...")
                 }
             }
-            .padding()
-        }
-        .navigationTitle(session.matchName)
-        .onAppear {
-            loadGraphData()
-            loadFlagData()
-            loadVideo()
-            startTimer()
-        }
-        .onDisappear {
-            stopTimer()
+            .navigationTitle(session.matchName)
+            .onAppear {
+                loadGraphData()
+                loadFlagData()
+                loadVideo()
+                startTimer()
+            }
+            .onDisappear {
+                stopTimer()
+            }
         }
     }
 

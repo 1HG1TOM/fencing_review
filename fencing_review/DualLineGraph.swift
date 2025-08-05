@@ -6,7 +6,7 @@ struct DualLineGraph: View {
     let data: [PositionDataPoint]
     let flagTimestamps: [Double]
     let onTapTime: (Double) -> Void
-    @Binding var chartHeight: CGFloat
+    @Binding var chartHeight: CGFloat?
     @Binding var currentTime: Double
     let videoDuration: Double
     let xAxisStart: Double
@@ -19,7 +19,7 @@ struct DualLineGraph: View {
     @State private var chartSize: CGSize = .zero
 
     var body: some View {
-        ZStack {
+        let chartView = ZStack {
             Chart {
                 // Target のライン
                 ForEach(splitSeries(data: data, for: \.targetX), id: \.self) { segment in
@@ -53,7 +53,7 @@ struct DualLineGraph: View {
                     }
                 }
 
-                // 現在のセット範囲内のみのフラグ線（横線）
+                // 現在のセット範囲内のみのフラグ線
                 ForEach(flagTimestamps.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
                     let flippedFlag = xAxisStart + videoDuration - ts
                     RuleMark(y: .value("Flag", flippedFlag))
@@ -61,7 +61,7 @@ struct DualLineGraph: View {
                         .lineStyle(StrokeStyle(lineWidth: 3, dash: [4]))
                 }
 
-                // 現在時間線（横線）
+                // 現在時間線
                 let flippedCurrentTime = xAxisStart + videoDuration - currentTime
                 RuleMark(y: .value("CurrentTime", flippedCurrentTime))
                     .foregroundStyle(Color.gray.opacity(0.4))
@@ -75,12 +75,14 @@ struct DualLineGraph: View {
                 GeometryReader { geo in
                     Color.clear.onAppear {
                         self.chartSize = geo.size
-                        self.chartHeight = geo.size.height
+                        if chartHeight == nil {
+                            self.chartHeight = geo.size.height
+                        }
                     }
                 }
             )
 
-            // タップ検出領域
+            // タップ検出エリア
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(
@@ -88,16 +90,22 @@ struct DualLineGraph: View {
                         .onEnded { value in
                             let tapY = value.location.y
                             let ratio = max(0, min(tapY / chartSize.height, 1))
-                            let tappedRelative = ratio * videoDuration
-                            let flippedTappedTime = xAxisStart + tappedRelative
+                            let tappedTime = xAxisStart + ratio * videoDuration
                             DispatchQueue.main.async {
-                                currentTime = flippedTappedTime
-                                onTapTime(flippedTappedTime)
+                                currentTime = tappedTime
+                                onTapTime(tappedTime)
                             }
                         }
                 )
         }
-        .frame(height: chartHeight)
+
+        Group {
+            if let height = chartHeight {
+                chartView.frame(height: height)
+            } else {
+                chartView
+            }
+        }
     }
 
     private func splitSeries(data: [PositionDataPoint], for keyPath: KeyPath<PositionDataPoint, Double?>) -> [[LinePoint]] {
