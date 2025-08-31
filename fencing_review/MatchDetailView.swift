@@ -1,4 +1,3 @@
-// MatchDetailView.swift
 import AVKit
 import Photos
 import Charts
@@ -30,9 +29,16 @@ struct MatchDetailView: View {
         didSet {
             if splitSets.indices.contains(selectedSetIndex) {
                 positionData = splitSets[selectedSetIndex]
+                loadScoringMarks()
+                recomputeScoreLabels()
             }
         }
     }
+    @State private var gfSeconds: [Double] = []
+    @State private var gaSeconds: [Double] = []
+    @State private var offsetSeconds: Double = 0
+    @State private var videoStartAt: Date? = nil
+    @State private var scoreLabels: [ScoreLabelMark] = []
 
     var body: some View {
         GeometryReader { geometry in
@@ -50,15 +56,14 @@ struct MatchDetailView: View {
                         if let firstTimestamp = splitSets[newIndex].first?.timestamp {
                             seekToTime(firstTimestamp)
                         }
+                        recomputeScoreLabels()
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
 
                 if isLandscape {
-                    // ---- Landscape ----
-                    HStack(alignment: .center, spacing: 16) {
-                        // Video
+                    HStack(alignment: .center, spacing: 8) {
                         if let player = player, let size = videoSize {
                             let aspectRatio = size.width / size.height
                             AVPlayerContainerView(player: player)
@@ -69,7 +74,6 @@ struct MatchDetailView: View {
                                 .frame(width: geometry.size.width * 0.6)
                         }
 
-                        // Chart + Slider
                         if !positionData.isEmpty {
                             let start = positionData.first?.timestamp ?? 0
                             let end = positionData.last?.timestamp ?? start
@@ -77,37 +81,44 @@ struct MatchDetailView: View {
                             let targetHeight = geometry.size.height * 0.8
 
                             HStack(spacing: 8) {
-                                VerticalSlider(
-                                    value: $currentTime,
-                                    range: start...end,
-                                    flags: flagTimestamps,
-                                    height: targetHeight,
-                                    onEnded: { seekToTime($0) }
-                                )
-                                .frame(width: 40)
-
                                 DualLineGraph(
                                     data: positionData,
                                     flagTimestamps: flagTimestamps,
+                                    gfSeconds: gfSeconds,
+                                    gaSeconds: gaSeconds,
                                     onTapTime: { seekToTime($0) },
-                                    chartHeight: .constant(targetHeight),  // ← 内側からの上書きを禁止
+                                    chartHeight: .constant(targetHeight),
                                     currentTime: $currentTime,
                                     videoDuration: duration,
                                     xAxisStart: start
                                 )
+
+
+                                VerticalSlider(
+                                    value: $currentTime,
+                                    range: start...end,
+                                    flags: flagTimestamps,
+                                    scoresGF: gfSeconds,
+                                    scoresGA: gaSeconds,
+                                    labels: scoreLabels,
+                                    height: targetHeight,
+                                    labelsOnLeft: false,
+                                    isEditing: $isDraggingSlider,
+                                    onEnded: { seekToTime($0) }
+                                )
+                                .id("slider-right")
                             }
-                            .frame(width: geometry.size.width * 0.2, height: targetHeight)
-                            .clipped() // ← はみ出し防止
+                            .frame(width: geometry.size.width * 0.28, height: targetHeight)
+                            .clipped()
                         } else {
                             Text("分析データを読み込み中...")
                                 .frame(width: geometry.size.width * 0.3)
                         }
                     }
-                    .padding(.horizontal)
+                    .padding()
                 } else {
-                    // ---- Portrait ----
                     ScrollView {
-                        VStack(spacing: 15) {
+                        VStack(spacing: 8) {
                             if let player = player, let size = videoSize {
                                 let aspectRatio = size.width / size.height
                                 AVPlayerContainerView(player: player)
@@ -121,30 +132,40 @@ struct MatchDetailView: View {
                                 let start = positionData.first?.timestamp ?? 0
                                 let end = positionData.last?.timestamp ?? start
                                 let duration = end - start
+                                let horizontalPadding: CGFloat = 16
+                                let targetWidth = geometry.size.width - horizontalPadding * 2
                                 let targetHeight = geometry.size.height * 0.5
-                                let targetWidth = geometry.size.width * 0.8
 
-                                HStack(alignment: .top) {
+                                HStack(alignment: .top, spacing: 8) {
                                     VerticalSlider(
                                         value: $currentTime,
                                         range: start...end,
                                         flags: flagTimestamps,
+                                        scoresGF: gfSeconds,
+                                        scoresGA: gaSeconds,
+                                        labels: scoreLabels,
                                         height: targetHeight,
+                                        labelsOnLeft: true,
+                                        isEditing: $isDraggingSlider,
                                         onEnded: { seekToTime($0) }
                                     )
-                                    .frame(width: 40)
+                                    .id("slider-left")
+
 
                                     DualLineGraph(
                                         data: positionData,
                                         flagTimestamps: flagTimestamps,
+                                        gfSeconds: gfSeconds,
+                                        gaSeconds: gaSeconds,
                                         onTapTime: { seekToTime($0) },
-                                        chartHeight: .constant(targetHeight), // ← 内側からの上書きを禁止
+                                        chartHeight: .constant(targetHeight),
                                         currentTime: $currentTime,
                                         videoDuration: duration,
                                         xAxisStart: start
                                     )
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .frame(width: targetWidth,height: targetHeight)
+                                .frame(width: targetWidth, height: targetHeight)
                                 .clipped()
                             } else {
                                 Text("分析データを読み込み中...")
@@ -159,15 +180,13 @@ struct MatchDetailView: View {
                 loadGraphData()
                 loadFlagData()
                 loadVideo()
+                loadScoringMarks()
                 startTimer()
             }
-            .onDisappear {
-                stopTimer()
-            }
+            .onDisappear { stopTimer() }
         }
     }
 
-    
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
             guard !isDraggingSlider, let currentItem = player?.currentItem else { return }
@@ -241,6 +260,7 @@ struct MatchDetailView: View {
             self.splitSets = splitIntoSets(from: points, gapThreshold: 10.0, minDuration: 90.0)
             self.selectedSetIndex = 0
             self.positionData = splitSets.first ?? []
+            self.recomputeScoreLabels() // 位置データが揃ったらラベル更新
         }
     }
 
@@ -248,6 +268,12 @@ struct MatchDetailView: View {
         guard let assetID = session.videoAssetID else { return }
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil)
         guard let asset = assets.firstObject else { return }
+
+        let anchor = asset.creationDate ?? session.creationDate
+        DispatchQueue.main.async {
+            self.videoStartAt = anchor
+            print("[Video] anchor=\(anchor)")
+        }
 
         let options = PHVideoRequestOptions()
         options.deliveryMode = .automatic
@@ -262,8 +288,40 @@ struct MatchDetailView: View {
                     self.videoSize = CGSize(width: abs(size.width), height: abs(size.height))
                     self.player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset))
                     self.videoDuration = durationSeconds
+                    self.loadScoringMarks() // duration と anchor が揃った後に得失点再計算
                 }
             }
+        }
+    }
+
+    private func loadScoringMarks() {
+        guard let anchor = videoStartAt else {
+            print("[Scoring] wait: videoStartAt is nil")
+            return
+        }
+        do {
+            let marks = try ScoringMapper.loadSeconds(
+                sessionID: session.id,
+                videoStartAt: anchor,
+                duration: videoDuration == 0 ? nil : videoDuration,
+                offset: offsetSeconds
+            )
+            self.gfSeconds = marks.gf
+            self.gaSeconds = marks.ga
+
+            let gfHead = gfSeconds.first.map { String(format: "%.3f", $0) } ?? "-"
+            let gaHead = gaSeconds.first.map { String(format: "%.3f", $0) } ?? "-"
+            let setStart = positionData.first?.timestamp ?? 0
+            let setEnd   = positionData.last?.timestamp ?? 0
+            print("[Scoring] anchor=\(anchor) GF:\(gfSeconds.count) GA:\(gaSeconds.count) " +
+                  "range=\(setStart)-\(setEnd) firstGF=\(gfHead) firstGA=\(gaHead)")
+
+            self.recomputeScoreLabels() // 得失点読み込み後にラベル更新
+        } catch {
+            print("得失点読み込み失敗: \(error.localizedDescription)")
+            self.gfSeconds = []
+            self.gaSeconds = []
+            self.scoreLabels = []
         }
     }
 
@@ -313,5 +371,29 @@ struct MatchDetailView: View {
         }
 
         return mergedSets
+    }
+
+    private func recomputeScoreLabels() {
+        guard let setStart = positionData.first?.timestamp,
+              let setEnd   = positionData.last?.timestamp else {
+            scoreLabels = []
+            return
+        }
+
+        let gfIn = gfSeconds.filter { $0 >= setStart && $0 <= setEnd }
+        let gaIn = gaSeconds.filter { $0 >= setStart && $0 <= setEnd }
+
+        var events: [(time: Double, type: String)] = []
+        events.append(contentsOf: gfIn.map { ($0, "GF") })
+        events.append(contentsOf: gaIn.map { ($0, "GA") })
+        events.sort { $0.time < $1.time }
+
+        var gf = 0, ga = 0
+        var labels: [ScoreLabelMark] = []
+        for e in events {
+            if e.type == "GF" { gf += 1 } else { ga += 1 }
+            labels.append(ScoreLabelMark(time: e.time, text: "\(gf)-\(ga)"))
+        }
+        scoreLabels = labels
     }
 }

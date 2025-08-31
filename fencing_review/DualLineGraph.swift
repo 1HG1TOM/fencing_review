@@ -1,10 +1,11 @@
-// DualLineGraph.swift
 import SwiftUI
 import Charts
 
 struct DualLineGraph: View {
     let data: [PositionDataPoint]
     let flagTimestamps: [Double]
+    let gfSeconds: [Double]
+    let gaSeconds: [Double]
     let onTapTime: (Double) -> Void
     @Binding var chartHeight: CGFloat?
     @Binding var currentTime: Double
@@ -53,12 +54,28 @@ struct DualLineGraph: View {
                     }
                 }
 
-                // 現在のセット範囲内のみのフラグ線
+                // フラグ（黄色、破線）
                 ForEach(flagTimestamps.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
                     let flippedFlag = xAxisStart + videoDuration - ts
                     RuleMark(y: .value("Flag", flippedFlag))
                         .foregroundStyle(Color.yellow)
                         .lineStyle(StrokeStyle(lineWidth: 3, dash: [4]))
+                }
+
+                // GF（黒線）
+                ForEach(gfSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
+                    let y = xAxisStart + videoDuration - ts
+                    RuleMark(y: .value("GF", y))
+                        .foregroundStyle(Color.black)
+                        .lineStyle(StrokeStyle(lineWidth: 2))
+                }
+
+                // GA（グレー0.5）
+                ForEach(gaSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
+                    let y = xAxisStart + videoDuration - ts
+                    RuleMark(y: .value("GA", y))
+                        .foregroundStyle(Color.gray.opacity(0.5))
+                        .lineStyle(StrokeStyle(lineWidth: 2))
                 }
 
                 // 現在時間線
