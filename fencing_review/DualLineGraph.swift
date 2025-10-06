@@ -6,6 +6,7 @@ struct DualLineGraph: View {
     let flagTimestamps: [Double]
     let gfSeconds: [Double]
     let gaSeconds: [Double]
+    let gdSeconds: [Double]
     let onTapTime: (Double) -> Void
     @Binding var chartHeight: CGFloat?
     @Binding var currentTime: Double
@@ -62,21 +63,29 @@ struct DualLineGraph: View {
                         .lineStyle(StrokeStyle(lineWidth: 3, dash: [4]))
                 }
 
-                // GF（黒線）
-                ForEach(gfSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
-                    let y = xAxisStart + videoDuration - ts
-                    RuleMark(y: .value("GF", y))
-                        .foregroundStyle(Color.black)
-                        .lineStyle(StrokeStyle(lineWidth: 2))
-                }
-
-                // GA（グレー0.5）
-                ForEach(gaSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
-                    let y = xAxisStart + videoDuration - ts
-                    RuleMark(y: .value("GA", y))
-                        .foregroundStyle(Color.gray.opacity(0.5))
-                        .lineStyle(StrokeStyle(lineWidth: 2))
-                }
+//                // GF（赤線）
+//                ForEach(gfSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
+//                    let y = xAxisStart + videoDuration - ts
+//                    RuleMark(y: .value("GF", y))
+//                        .foregroundStyle(Color.red.opacity(0.4))
+//                        .lineStyle(StrokeStyle(lineWidth: 2))
+//                }
+//
+//                // GA（青線）
+//                ForEach(gaSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
+//                    let y = xAxisStart + videoDuration - ts
+//                    RuleMark(y: .value("GA", y))
+//                        .foregroundStyle(Color.blue.opacity(0.4))
+//                        .lineStyle(StrokeStyle(lineWidth: 2))
+//                }
+//                
+//                // GD（グレー線）
+//                ForEach(gdSeconds.filter { $0 >= xAxisStart && $0 <= xAxisStart + videoDuration }, id: \.self) { ts in
+//                    let y = xAxisStart + videoDuration - ts
+//                    RuleMark(y: .value("GD", y))
+//                        .foregroundStyle(Color.gray.opacity(0.6))
+//                        .lineStyle(StrokeStyle(lineWidth: 2))
+//                }
 
                 // 現在時間線
                 let flippedCurrentTime = xAxisStart + videoDuration - currentTime
@@ -88,6 +97,12 @@ struct DualLineGraph: View {
             .chartYScale(domain: 0...videoDuration)
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
+            .chartPlotStyle { plotArea in
+                plotArea
+                    .frame(maxWidth: .infinity, maxHeight: .infinity) // ★縦横いっぱいに広げる
+                    .clipped()
+            }
+            .frame(maxHeight: .infinity)
             .background(
                 GeometryReader { geo in
                     Color.clear.onAppear {

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject private var cameraManager = CameraManager.shared
     var body: some View {
         NavigationView {
             VStack(spacing: 40) {
@@ -12,7 +13,7 @@ struct HomeView: View {
                 
                 .padding()
 
-                NavigationLink(destination: ContentView()) {
+                NavigationLink(destination: CameraScreen(cameraManager: cameraManager)) {
                     Text("試合を撮影する")
                         .font(.title2)
                         .padding()

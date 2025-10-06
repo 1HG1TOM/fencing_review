@@ -6,10 +6,20 @@ struct MatchListView: View {
     var body: some View {
         List(sessions) { session in
             NavigationLink(destination: MatchDetailView(session: session)) {
-                Text(session.matchName)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(session.matchName)
+                            .font(.headline)
+                        Text("フラグ数: \(DataSaver.countFlags(inMatch: session.matchName))")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Text(session.creationDate, style: .date)
+                }
             }
         }
-        .navigationTitle("試合一覧")
+        .navigationTitle("試合一覧") // ← タイトルは残す
         .onAppear {
             loadSessions()
         }

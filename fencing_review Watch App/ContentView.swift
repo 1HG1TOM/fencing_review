@@ -9,7 +9,7 @@ struct ContentView: View {
                 Spacer()
 
                 Button(action: {
-                    connectivityManager.sendFlagTimestamp()
+                    connectivityManager.addFlagNow()
                 }) {
                     Text("フラグ")
                         .font(.title2)

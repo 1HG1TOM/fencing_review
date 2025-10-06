@@ -11,6 +11,7 @@ struct VerticalSlider: View {
     let flags: [Double]
     let scoresGF: [Double]
     let scoresGA: [Double]
+    let scoresGD: [Double]
     let labels: [ScoreLabelMark]
     let height: CGFloat
     var labelsOnLeft: Bool = false
@@ -22,10 +23,10 @@ struct VerticalSlider: View {
     // レイアウト定数（必要に応じて微調整）
     private let barWidth: CGFloat = 6
     private let labelGap: CGFloat = 6
-    private let labelWidth: CGFloat = 25
+    private let labelWidth: CGFloat = 35
     private let knobWidth: CGFloat = 21
     private let knobSize: CGFloat = 14
-    private let graphSpacing: CGFloat = 8  // ← グラフ側だけに入れる内部スペース
+    private let graphSpacing: CGFloat = 3  // ← グラフ側だけに入れる内部スペース
     
     var body: some View {
         // ノブの左右はみ出しに必要な余白（バー中心から半分）
@@ -66,11 +67,16 @@ struct VerticalSlider: View {
                     mark(at: t, range: range, plotHeight: plotHeight, x: barX, color: .yellow)
                 }
                 ForEach(scoresGF, id: \.self) { t in
-                    mark(at: t, range: range, plotHeight: plotHeight, x: barX, color: .black)
+                    mark(at: t, range: range, plotHeight: plotHeight, x: barX, color: .red.opacity(0.4))
                 }
                 ForEach(scoresGA, id: \.self) { t in
-                    mark(at: t, range: range, plotHeight: plotHeight, x: barX, color: .gray.opacity(0.5))
+                    mark(at: t, range: range, plotHeight: plotHeight, x: barX, color: .blue.opacity(0.4))
                 }
+                
+                ForEach(scoresGD, id: \.self) { t in
+                    mark(at: t, range: range, plotHeight: plotHeight, x: barX, color: .gray.opacity(0.6))
+                }
+
                 
                 // ★ ラベルも plotHeight に直接マッピング
                 ForEach(labels, id: \.self) { lab in
@@ -141,3 +147,4 @@ struct VerticalSlider: View {
         }
     }
 }
+

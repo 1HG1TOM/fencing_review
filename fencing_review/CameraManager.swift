@@ -30,7 +30,7 @@ class CameraManager: ObservableObject {
     private var statusTimer: Timer?
     private var lastSentTime = Date(timeIntervalSince1970: 0)
     
-    private let apiURL = URL(string: "https://nkmr-lab-share-galleria.tail4dcf3.ts.net/detect-players")
+    private let apiURL = URL(string: "https://vps15.nkmr.io/fencing-review-api/detect-players")
     
     var cameraViewController: CameraViewController?
     
@@ -128,17 +128,28 @@ class CameraManager: ObservableObject {
         var newSession = RecordingSession(id: UUID(), creationDate: Date(), matchName: self.matchName)
         
         do {
+            // ① 動画をフォトライブラリに保存
             let videoAssetID = try await MediaSaver.saveVideoToPhotoLibrary(from: videoTempURL)
             newSession.videoAssetID = videoAssetID
             
-            let flagFilename = try DataSaver.saveFlagTimestamps(times: self.flagTimestamps, sessionID: newSession.id)
+            // ② 試合名でフォルダを作ってその中に保存
+            let flagFilename = try DataSaver.saveFlagTimestamps(
+                times: self.flagTimestamps,
+                sessionID: newSession.id,
+                videoName: self.matchName
+            )
             newSession.flagDataFilename = flagFilename
 
-            let analysisFilename = try DataSaver.saveAnalysisData(frames: analysisFrames, sessionID: newSession.id)
+            let analysisFilename = try DataSaver.saveAnalysisData(
+                frames: analysisFrames,
+                sessionID: newSession.id,
+                videoName: self.matchName
+            )
             newSession.analysisDataFilename = analysisFilename
 
-            print("フラグファイル保存済み: \(flagFilename)")
-            
+            print("✅ フラグ・分析データ保存先: \(self.matchName) フォルダ内")
+
+            // ③ セッション情報を保存
             SessionStore.save(session: newSession)
             self.resultText = "「\(self.matchName)」の保存が完了しました。"
         } catch {
@@ -147,6 +158,7 @@ class CameraManager: ObservableObject {
         
         self.resetToIdle()
     }
+
     
     private func resetToIdle() {
         self.uiState = .enteringMatchName
