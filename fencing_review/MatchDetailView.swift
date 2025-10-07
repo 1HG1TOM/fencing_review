@@ -54,192 +54,290 @@ struct MatchDetailView: View {
     private let tinyJumpThreshold: Double = 0.5
     
     @Environment(\.dismiss) private var dismiss
-
+    
+    // 画面の向きを追跡（変化ではなく現在の状態）
+    @State private var currentOrientation: String = "unknown"
+    @State private var isFirstOrientationCheck: Bool = true
 
     var body: some View {
         GeometryReader { geometry in
             let isLandscape = geometry.size.width > geometry.size.height
-
-            // すべてを1つのVStackにまとめる（←重要）
+            
             VStack(spacing: 0) {
-
                 // --- セット選択ピッカー ---
-                Picker("セット", selection: $selectedSetIndex) {
-                    ForEach(splitSets.indices, id: \.self) { i in
-                        Text("\(i + 1)").tag(i)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(8)
-                .onChange(of: selectedSetIndex) { newIndex in
-                    if splitSets.indices.contains(newIndex) {
-                        positionData = splitSets[newIndex]
-                        if let firstTimestamp = splitSets[newIndex].first?.timestamp {
-                            seekToTime(firstTimestamp, via: "set_change")
-                        }
-                        recomputeScoreLabels()
-                    }
-                }
-
-                // --- ピッカー直下にセットごとのフラグ数 ---
-                HStack {
-                    ForEach(splitSets.indices, id: \.self) { i in
-                        let start = splitSets[i].first?.timestamp ?? 0
-                        let end   = splitSets[i].last?.timestamp  ?? 0
-                        let count = flagTimestamps.filter { $0 >= start && $0 <= end }.count
-
-                        Text("\(count)個")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-                .padding(.horizontal)
-
-                // --- メイン領域（横/縦で切替） ---
+                setPickerSection
+                
+                // --- フラグ数表示 ---
+                flagCountSection
+                
+                // --- メイン領域 ---
                 if isLandscape {
-                    // 横画面レイアウト
-                    HStack(alignment: .center, spacing: 8) {
-                        if let player = player, let size = videoSize {
-                            let aspectRatio = size.width / size.height
-                            AVPlayerContainerView(player: player, onFullscreenChange: { _ in })
-                                .aspectRatio(aspectRatio, contentMode: .fit)
-                                .frame(width: geometry.size.width * 0.6)
-                        } else {
-                            Text("動画を読み込み中...")
-                                .frame(width: geometry.size.width * 0.6)
-                        }
-
-                        if !positionData.isEmpty {
-                            let start = positionData.first?.timestamp ?? 0
-                            let end = positionData.last?.timestamp ?? start
-                            let duration = end - start
-                            let targetHeight = geometry.size.height * 0.8
-
-                            HStack(spacing: 8) {
-                                DualLineGraph(
-                                    data: positionData,
-                                    flagTimestamps: flagTimestamps,
-                                    gfSeconds: gfSeconds,
-                                    gaSeconds: gaSeconds,
-                                    gdSeconds: gdSeconds,
-                                    onTapTime: { seekToTime($0, via: "graph_tap") },
-                                    chartHeight: .constant(targetHeight),
-                                    currentTime: $currentTime,
-                                    videoDuration: duration,
-                                    xAxisStart: start
-                                )
-
-                                VerticalSlider(
-                                    value: $currentTime,
-                                    range: start...end,
-                                    flags: flagTimestamps,
-                                    scoresGF: gfSeconds,
-                                    scoresGA: gaSeconds,
-                                    scoresGD: gdSeconds,
-                                    labels: scoreLabels,
-                                    height: targetHeight,
-                                    labelsOnLeft: false,
-                                    isEditing: $isDraggingSlider,
-                                    onEnded: { seekToTime($0, via: "slider_drag") }
-                                )
-                                .id("slider-right")
-                            }
-                            .frame(width: geometry.size.width * 0.28, height: targetHeight)
-                            .clipped()
-                        } else {
-                            Text("分析データを読み込み中...")
-                                .frame(width: geometry.size.width * 0.3)
-                        }
-                    }
-                    .padding()
+                    landscapeLayout(geometry: geometry)
                 } else {
-                    // 縦画面レイアウト
-                    ScrollView {
-                        VStack(spacing: 8) {
-                            if let player = player, let size = videoSize {
-                                let aspectRatio = size.width / size.height
-                                AVPlayerContainerView(player: player, onFullscreenChange: { _ in })
-                                    .aspectRatio(aspectRatio, contentMode: .fit)
-                                    .onAppear { player.play() }
-                            } else {
-                                Text("動画を読み込み中...")
-                            }
-
-                            if !positionData.isEmpty {
-                                let start = positionData.first?.timestamp ?? 0
-                                let end = positionData.last?.timestamp ?? start
-                                let duration = end - start
-                                let horizontalPadding: CGFloat = 16
-                                let targetWidth = geometry.size.width - horizontalPadding * 2
-                                let targetHeight = geometry.size.height * 0.6
-
-                                HStack(alignment: .top, spacing: 8) {
-                                    VerticalSlider(
-                                        value: $currentTime,
-                                        range: start...end,
-                                        flags: flagTimestamps,
-                                        scoresGF: gfSeconds,
-                                        scoresGA: gaSeconds,
-                                        scoresGD: gdSeconds,
-                                        labels: scoreLabels,
-                                        height: targetHeight,
-                                        labelsOnLeft: true,
-                                        isEditing: $isDraggingSlider,
-                                        onEnded: { seekToTime($0, via: "slider_drag") }
-                                    )
-                                    .id("slider-left")
-
-                                    DualLineGraph(
-                                        data: positionData,
-                                        flagTimestamps: flagTimestamps,
-                                        gfSeconds: gfSeconds,
-                                        gaSeconds: gaSeconds,
-                                        gdSeconds: gdSeconds,
-                                        onTapTime: { seekToTime($0, via: "graph_tap") },
-                                        chartHeight: .constant(targetHeight),
-                                        currentTime: $currentTime,
-                                        videoDuration: duration,
-                                        xAxisStart: start
-                                    )
-                                    .frame(maxWidth: .infinity)
-                                }
-                                .frame(width: targetWidth, height: targetHeight)
-                                .clipped()
-                            } else {
-                                Text("分析データを読み込み中...")
-                            }
-                        }
-                    }
+                    portraitLayout(geometry: geometry)
                 }
+            }
+            .onChange(of: geometry.size) { newSize in
+                updateOrientationIfNeeded(newSize)
             }
         }
         .navigationTitle(session.matchName)
-        .navigationTitle(session.matchName)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(false)   // ← 自作ナビゲーションを削除して標準に戻す
+        .navigationBarBackButtonHidden(false)
         .toolbarRole(.navigationStack)
-        .onAppear {
-            Logger.shared.log(event: "start_review", [
-                "match": session.matchName,
-                "videoID": session.videoAssetID ?? "nil"
+        .onAppear(perform: onAppearHandler)
+        .onDisappear(perform: onDisappearHandler)
+    }
+    
+    // ------------------- サブビュー -------------------
+    
+    private var setPickerSection: some View {
+        Picker("セット", selection: $selectedSetIndex) {
+            ForEach(splitSets.indices, id: \.self) { i in
+                Text("\(i + 1)").tag(i)
+            }
+        }
+        .pickerStyle(SegmentedPickerStyle())
+        .padding(8)
+        .onChange(of: selectedSetIndex) { newIndex in
+            handleSetChange(newIndex)
+        }
+    }
+    
+    private var flagCountSection: some View {
+        HStack {
+            ForEach(splitSets.indices, id: \.self) { i in
+                flagCountText(for: i)
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    private func flagCountText(for index: Int) -> some View {
+        let start = splitSets[index].first?.timestamp ?? 0
+        let end = splitSets[index].last?.timestamp ?? 0
+        let count = flagTimestamps.filter { $0 >= start && $0 <= end }.count
+        
+        return Text("\(count)個")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .frame(maxWidth: .infinity)
+    }
+    
+    private func landscapeLayout(geometry: GeometryProxy) -> some View {
+        HStack(alignment: .center, spacing: 8) {
+            videoPlayerView(width: geometry.size.width * 0.6)
+            
+            if !positionData.isEmpty {
+                graphAndSliderView(
+                    width: geometry.size.width * 0.28,
+                    height: geometry.size.height * 0.8,
+                    labelsOnLeft: false
+                )
+            } else {
+                loadingTextView(width: geometry.size.width * 0.3)
+            }
+        }
+        .padding()
+    }
+    
+    private func portraitLayout(geometry: GeometryProxy) -> some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                if let player = player, let size = videoSize {
+                    let aspectRatio = size.width / size.height
+                    AVPlayerContainerView(
+                        player: player,
+                        onFullscreenChange: handleFullscreenChange
+                    )
+                    .aspectRatio(aspectRatio, contentMode: .fit)
+                    .onAppear { player.play() }
+                } else {
+                    Text("動画を読み込み中...")
+                }
+                
+                if !positionData.isEmpty {
+                    let horizontalPadding: CGFloat = 16
+                    let targetWidth = geometry.size.width - horizontalPadding * 2
+                    let targetHeight = geometry.size.height * 0.6
+                    
+                    sliderAndGraphView(
+                        width: targetWidth,
+                        height: targetHeight
+                    )
+                } else {
+                    Text("分析データを読み込み中...")
+                }
+            }
+        }
+    }
+    
+    private func videoPlayerView(width: CGFloat) -> some View {
+        Group {
+            if let player = player, let size = videoSize {
+                let aspectRatio = size.width / size.height
+                AVPlayerContainerView(
+                    player: player,
+                    onFullscreenChange: handleFullscreenChange
+                )
+                .aspectRatio(aspectRatio, contentMode: .fit)
+                .frame(width: width)
+            } else {
+                Text("動画を読み込み中...")
+                    .frame(width: width)
+            }
+        }
+    }
+    
+    private func loadingTextView(width: CGFloat) -> some View {
+        Text("分析データを読み込み中...")
+            .frame(width: width)
+    }
+    
+    private func graphAndSliderView(width: CGFloat, height: CGFloat, labelsOnLeft: Bool) -> some View {
+        let start = positionData.first?.timestamp ?? 0
+        let end = positionData.last?.timestamp ?? start
+        let duration = end - start
+        
+        return HStack(spacing: 8) {
+            DualLineGraph(
+                data: positionData,
+                flagTimestamps: flagTimestamps,
+                gfSeconds: gfSeconds,
+                gaSeconds: gaSeconds,
+                gdSeconds: gdSeconds,
+                onTapTime: { seekToTime($0, via: "graph_tap") },
+                chartHeight: .constant(height),
+                currentTime: $currentTime,
+                videoDuration: duration,
+                xAxisStart: start
+            )
+            
+            VerticalSlider(
+                value: $currentTime,
+                range: start...end,
+                flags: flagTimestamps,
+                scoresGF: gfSeconds,
+                scoresGA: gaSeconds,
+                scoresGD: gdSeconds,
+                labels: scoreLabels,
+                height: height,
+                labelsOnLeft: labelsOnLeft,
+                isEditing: $isDraggingSlider,
+                onEnded: { seekToTime($0, via: "slider_drag") }
+            )
+            .id("slider-right")
+        }
+        .frame(width: width, height: height)
+        .clipped()
+    }
+    
+    private func sliderAndGraphView(width: CGFloat, height: CGFloat) -> some View {
+        let start = positionData.first?.timestamp ?? 0
+        let end = positionData.last?.timestamp ?? start
+        let duration = end - start
+        
+        return HStack(alignment: .top, spacing: 8) {
+            VerticalSlider(
+                value: $currentTime,
+                range: start...end,
+                flags: flagTimestamps,
+                scoresGF: gfSeconds,
+                scoresGA: gaSeconds,
+                scoresGD: gdSeconds,
+                labels: scoreLabels,
+                height: height,
+                labelsOnLeft: true,
+                isEditing: $isDraggingSlider,
+                onEnded: { seekToTime($0, via: "slider_drag") }
+            )
+            .id("slider-left")
+            
+            DualLineGraph(
+                data: positionData,
+                flagTimestamps: flagTimestamps,
+                gfSeconds: gfSeconds,
+                gaSeconds: gaSeconds,
+                gdSeconds: gdSeconds,
+                onTapTime: { seekToTime($0, via: "graph_tap") },
+                chartHeight: .constant(height),
+                currentTime: $currentTime,
+                videoDuration: duration,
+                xAxisStart: start
+            )
+            .frame(maxWidth: .infinity)
+        }
+        .frame(width: width, height: height)
+        .clipped()
+    }
+
+    // ------------------- イベントハンドラー -------------------
+    
+    private func handleSetChange(_ newIndex: Int) {
+        if splitSets.indices.contains(newIndex) {
+            positionData = splitSets[newIndex]
+            if let firstTimestamp = splitSets[newIndex].first?.timestamp {
+                seekToTime(firstTimestamp, via: "set_change")
+            }
+            recomputeScoreLabels()
+        }
+    }
+    
+    private func updateOrientationIfNeeded(_ size: CGSize) {
+        let newOrientation = size.width > size.height ? "landscape" : "portrait"
+        
+        // 初回はログを記録せず、状態だけ更新（画面回転の強制による誤検知を防ぐ）
+        if isFirstOrientationCheck {
+            isFirstOrientationCheck = false
+            currentOrientation = newOrientation
+            return
+        }
+        
+        // 向きが実際に変わった時だけログを記録
+        if currentOrientation != newOrientation {
+            currentOrientation = newOrientation
+            Logger.shared.log(event: "device_orientation", [
+                "orientation": newOrientation
             ])
-            isPlayerInitializing = true
-            loadGraphData()
-            loadFlagData()
-            loadVideo()
-            startTimer()
         }
-        .onDisappear {
-            stopTimer()
-            timeControlStatusObs?.invalidate()
-            timeControlStatusObs = nil
-            if let obs = timeJumpObserver { NotificationCenter.default.removeObserver(obs) }
-            if let obs = didPlayToEndObserver { NotificationCenter.default.removeObserver(obs) }
-            timeJumpObserver = nil
-            didPlayToEndObserver = nil
-            Logger.shared.log(event: "end_review")
-        }
+    }
+    
+    private func handleFullscreenChange(_ isFullscreen: Bool) {
+        let currentPosition = player?.currentTime().seconds ?? 0
+        Logger.shared.log(event: "fullscreen", [
+            "state": isFullscreen ? "enter" : "exit",
+            "position": currentPosition
+        ])
+    }
+    
+    private func onAppearHandler() {
+        // 初期の向きを設定（ログは記録しない）
+        OrientationManager.setLandscapeRight()
+        
+        Logger.shared.log(event: "start_review", [
+            "match": session.matchName,
+            "videoID": session.videoAssetID ?? "nil"
+        ])
+        
+        isPlayerInitializing = true
+        loadGraphData()
+        loadFlagData()
+        loadVideo()
+        startTimer()
+    }
+    
+    private func onDisappearHandler() {
+        // 画面回転の強制をやめる（ユーザーの操作を妨げない）
+        // OrientationManager.setPortrait() // ← コメントアウト
+        
+        stopTimer()
+        timeControlStatusObs?.invalidate()
+        timeControlStatusObs = nil
+        if let obs = timeJumpObserver { NotificationCenter.default.removeObserver(obs) }
+        if let obs = didPlayToEndObserver { NotificationCenter.default.removeObserver(obs) }
+        timeJumpObserver = nil
+        didPlayToEndObserver = nil
+        Logger.shared.log(event: "end_review")
     }
 
     // ------------------- タイマー制御 -------------------
@@ -322,7 +420,7 @@ struct MatchDetailView: View {
         let anchor = asset.creationDate ?? session.creationDate
         DispatchQueue.main.async {
             self.videoStartAt = anchor
-            self.loadScoringMarks()   // videoStartAt を確定させてから
+            self.loadScoringMarks()
         }
 
         let options = PHVideoRequestOptions()
@@ -347,8 +445,6 @@ struct MatchDetailView: View {
         guard let anchor = videoStartAt else { return }
         let scoreFileName = "scores-\(session.id.uuidString).json"
         let scoreFileURL = folderURL(for: session.matchName).appendingPathComponent(scoreFileName)
-
-        print("[Debug] loadScoringMarks called")
 
         do {
             if FileManager.default.fileExists(atPath: scoreFileURL.path) {
@@ -377,11 +473,6 @@ struct MatchDetailView: View {
             self.gaSeconds = []
             self.gdSeconds = []
             self.splitSets = [fullPositionData]
-        }
-
-        print("[Debug] splitSets.count = \(splitSets.count)")
-        splitSets.enumerated().forEach { i, set in
-            print("  Set \(i): \(set.first?.timestamp ?? -1) 〜 \(set.last?.timestamp ?? -1)  (\(set.count) points)")
         }
     }
 
