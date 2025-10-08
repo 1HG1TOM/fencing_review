@@ -1,27 +1,28 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var connectivityManager = WatchConnectivityManager()
+    @ObservedObject var connectivity = WatchConnectivityManager()
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                Spacer()
+        VStack(spacing: 20) {
+            // 接続状態表示
+            Text(connectivity.isReachable ? "📡 接続中" : "📴 未接続")
+                .font(.footnote)
+                .foregroundColor(connectivity.isReachable ? .green : .red)
 
-                Button(action: {
-                    connectivityManager.addFlagNow()
-                }) {
-                    Text("フラグ")
-                        .font(.title2)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(20)
-                }
-
-                Spacer()
+            // フラグ送信ボタン（大きく・緑に）
+            Button(action: {
+                connectivity.sendFlagTimestamp()
+            }) {
+                Text("フラグ")
+                    .font(.title2.bold())
+                    .frame(width: 140, height: 140)
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .clipShape(Circle())
+                    .shadow(radius: 8)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .buttonStyle(PlainButtonStyle()) // デフォルトの小型化を防ぐ
         }
         .padding()
     }
