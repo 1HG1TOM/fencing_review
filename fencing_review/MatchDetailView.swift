@@ -15,11 +15,19 @@ struct PositionDataPoint: Identifiable {
     let people: Int
 }
 
+// ------------------- Player保持クラス -------------------
+
+final class PlayerHolder: ObservableObject {
+    @Published var player: AVPlayer?
+}
+
+
 // ------------------- MatchDetailView -------------------
 
 struct MatchDetailView: View {
     let session: RecordingSession
-    @State private var player: AVPlayer?
+    @StateObject private var playerHolder = PlayerHolder()
+
     @State private var videoSize: CGSize? = nil
     @State private var fullPositionData: [PositionDataPoint] = []
     @State private var splitSets: [[PositionDataPoint]] = []
@@ -29,10 +37,6 @@ struct MatchDetailView: View {
     @State private var videoDuration: Double = 0
     @State private var timer: Timer?
     @State private var isDraggingSlider: Bool = false
-
-    @State private var timeControlStatusObs: NSKeyValueObservation?
-    @State private var timeJumpObserver: NSObjectProtocol?
-    @State private var didPlayToEndObserver: NSObjectProtocol?
 
     @State private var selectedSetIndex: Int = 0 {
         didSet {
@@ -50,17 +54,13 @@ struct MatchDetailView: View {
     @State private var videoStartAt: Date? = nil
     @State private var scoreLabels: [ScoreLabelMark] = []
     @State private var isPlayerInitializing: Bool = true
-    private let initQuietPeriod: TimeInterval = 0.5
-    private let tinyJumpThreshold: Double = 0.5
-    
-    @Environment(\.dismiss) private var dismiss
 
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         GeometryReader { geometry in
             let isLandscape = geometry.size.width > geometry.size.height
 
-            // すべてを1つのVStackにまとめる（←重要）
             VStack(spacing: 0) {
 
                 // --- セット選択ピッカー ---
@@ -96,11 +96,11 @@ struct MatchDetailView: View {
                 }
                 .padding(.horizontal)
 
-                // --- メイン領域（横/縦で切替） ---
+                // --- メイン領域 ---
                 if isLandscape {
-                    // 横画面レイアウト
+                    // 横画面
                     HStack(alignment: .center, spacing: 8) {
-                        if let player = player, let size = videoSize {
+                        if let player = playerHolder.player, let size = videoSize {
                             let aspectRatio = size.width / size.height
                             AVPlayerContainerView(player: player, onFullscreenChange: { _ in })
                                 .aspectRatio(aspectRatio, contentMode: .fit)
@@ -154,10 +154,10 @@ struct MatchDetailView: View {
                     }
                     .padding()
                 } else {
-                    // 縦画面レイアウト
+                    // 縦画面
                     ScrollView {
                         VStack(spacing: 8) {
-                            if let player = player, let size = videoSize {
+                            if let player = playerHolder.player, let size = videoSize {
                                 let aspectRatio = size.width / size.height
                                 AVPlayerContainerView(player: player, onFullscreenChange: { _ in })
                                     .aspectRatio(aspectRatio, contentMode: .fit)
@@ -215,16 +215,12 @@ struct MatchDetailView: View {
             }
         }
         .navigationTitle(session.matchName)
-        .navigationTitle(session.matchName)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(false)   // ← 自作ナビゲーションを削除して標準に戻す
-        .toolbarRole(.navigationStack)
         .onAppear {
             Logger.shared.log(event: "start_review", [
                 "match": session.matchName,
                 "videoID": session.videoAssetID ?? "nil"
             ])
-            isPlayerInitializing = true
             loadGraphData()
             loadFlagData()
             loadVideo()
@@ -232,12 +228,6 @@ struct MatchDetailView: View {
         }
         .onDisappear {
             stopTimer()
-            timeControlStatusObs?.invalidate()
-            timeControlStatusObs = nil
-            if let obs = timeJumpObserver { NotificationCenter.default.removeObserver(obs) }
-            if let obs = didPlayToEndObserver { NotificationCenter.default.removeObserver(obs) }
-            timeJumpObserver = nil
-            didPlayToEndObserver = nil
             Logger.shared.log(event: "end_review")
         }
     }
@@ -246,7 +236,7 @@ struct MatchDetailView: View {
 
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
-            guard !isDraggingSlider, let currentItem = player?.currentItem else { return }
+            guard !isDraggingSlider, let currentItem = playerHolder.player?.currentItem else { return }
             let time = currentItem.currentTime().seconds
             if !time.isNaN { self.currentTime = time }
         }
@@ -258,12 +248,13 @@ struct MatchDetailView: View {
     }
 
     private func seekToTime(_ seconds: Double, via: String = "unknown") {
-        guard let player = player else { return }
+        guard let player = playerHolder.player else { return }
         let from = player.currentTime().seconds
+        print("[Seek] via=\(via), from=\(from) → to=\(seconds)")
         let cmTime = CMTime(seconds: seconds, preferredTimescale: 600)
         player.seek(to: cmTime, toleranceBefore: .zero, toleranceAfter: .zero)
-        Logger.shared.log(event: "seek", ["from": from, "to": seconds, "via": via])
     }
+
 
     // ------------------- データ読み込み -------------------
 
@@ -322,7 +313,7 @@ struct MatchDetailView: View {
         let anchor = asset.creationDate ?? session.creationDate
         DispatchQueue.main.async {
             self.videoStartAt = anchor
-            self.loadScoringMarks()   // videoStartAt を確定させてから
+            self.loadScoringMarks()
         }
 
         let options = PHVideoRequestOptions()
@@ -336,7 +327,7 @@ struct MatchDetailView: View {
                 let durationSeconds = avAsset.duration.seconds
                 DispatchQueue.main.async {
                     self.videoSize = CGSize(width: abs(size.width), height: abs(size.height))
-                    self.player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset))
+                    self.playerHolder.player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset))
                     self.videoDuration = durationSeconds
                 }
             }
@@ -347,8 +338,6 @@ struct MatchDetailView: View {
         guard let anchor = videoStartAt else { return }
         let scoreFileName = "scores-\(session.id.uuidString).json"
         let scoreFileURL = folderURL(for: session.matchName).appendingPathComponent(scoreFileName)
-
-        print("[Debug] loadScoringMarks called")
 
         do {
             if FileManager.default.fileExists(atPath: scoreFileURL.path) {
@@ -378,11 +367,6 @@ struct MatchDetailView: View {
             self.gdSeconds = []
             self.splitSets = [fullPositionData]
         }
-
-        print("[Debug] splitSets.count = \(splitSets.count)")
-        splitSets.enumerated().forEach { i, set in
-            print("  Set \(i): \(set.first?.timestamp ?? -1) 〜 \(set.last?.timestamp ?? -1)  (\(set.count) points)")
-        }
     }
 
     // ------------------- セット分割 -------------------
@@ -410,11 +394,9 @@ struct MatchDetailView: View {
         return sets
     }
 
-    private func splitIntoSets(
-        from data: [PositionDataPoint],
-        gapThreshold: Double = 30.0,
-        minDuration: Double = 90.0
-    ) -> [[PositionDataPoint]] {
+    private func splitIntoSets(from data: [PositionDataPoint],
+                               gapThreshold: Double = 30.0,
+                               minDuration: Double = 90.0) -> [[PositionDataPoint]] {
         var rawSets: [[PositionDataPoint]] = []
         var currentSet: [PositionDataPoint] = []
         var lastValidTime: Double? = nil

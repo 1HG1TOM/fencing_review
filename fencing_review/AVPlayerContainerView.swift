@@ -14,7 +14,11 @@ struct AVPlayerContainerView: UIViewControllerRepresentable {
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        if uiViewController.player !== player {
+            uiViewController.player = player
+        }
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)

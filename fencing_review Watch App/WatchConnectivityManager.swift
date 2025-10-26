@@ -29,7 +29,7 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     func sendFlagTimestamp() {
         let currentTimestamp = Date().timeIntervalSince1970
         let item = FlagItem(id: UUID(), timestamp: currentTimestamp)
-        WKInterfaceDevice.current().play(.click)
+        WKInterfaceDevice.current().play(.success)
 
         guard let session = session else { return }
 
